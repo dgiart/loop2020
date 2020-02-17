@@ -14,14 +14,41 @@ t = R * R - r * r - z * z
 k_2 = 4 * R * r / p ^ 2'''
 
 
-def closest(L,x):
-    dist=abs(L[0]-x)
-    closest=L[0]
-    for el in L:
-        if dist>abs(el-x):
-            dist=abs(el-x)
-            closest=el
-    return closest#, dist
+# def closest(L,x):
+#     dist=abs(L[0]-x)
+#     closest=L[0]
+#     for el in L:
+#         if dist>abs(el-x):
+#             dist=abs(el-x)
+#             closest=el
+#     return closest#, dist
+def closest(array,value):
+    '''Given an ``array`` , and given a ``value`` , returns an index j such that ``value`` is between array[j]
+    and array[j+1]. ``array`` must be monotonic increasing. j=-1 or j=len(array) is returned
+    to indicate that ``value`` is out of range below and above respectively.'''
+    n = len(array)
+    # if (value < array[0]):
+    #     return -1
+    # elif (value > array[n-1]):
+    #     return n
+    jl = 0# Initialize lower
+    ju = n-1# and upper limits.
+    while (ju-jl > 1):# If we are not yet done,
+        jm=(ju+jl) >> 1# compute a midpoint with a bitshift
+        if (value >= array[jm]):
+            jl=jm# and replace either the lower limit
+        else:
+            ju=jm# or the upper limit, as appropriate.
+        # Repeat until the test condition is satisfied.
+    if (value == array[0]):# edge cases at bottom
+        return 0
+    elif (value == array[n-1]):# and top
+        return n-1
+    else:
+        return array[jl]
+
+
+
 def I01(r, z, R,K,ee,ek):
     # from math import sqrt
     _k = float(( 4. * r * R / float((r + R) * (r + R) + z * z) )**0.5 )

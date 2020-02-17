@@ -1,0 +1,23 @@
+17.02.2020
+1)Re=55, Time to calk E=0.0006744861602783203
+
+2)Re=55, with old closest-func dr=dz=0.5 in ZV
+Time for coefficient calculation: 127.98121547698975
+Zv= 2.9853531114577163
+Zi= 3.7446617056214775
+B= 0.20277094537642448
+Time= 295.7505931854248
+
+3)Re=55, with new closest-func dr=dz=0.5 in ZV
+Time for coefficient calculation: 93.6145761013031
+Zv= 2.9853531134734794
+Zi= 3.744661712706967
+B= 0.2027709463466042
+Time= 208.01059865951538
+
+4)Re=55, with new closest-func dr=dz=1. in ZV
+Time for coefficient calculation: 93.6145761013031
+Zv= 2.9696315341771964
+Zi= 3.744661712706967
+B= 0.2069693440931708
+Time= 127.8560082912445

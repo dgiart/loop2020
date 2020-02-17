@@ -10,7 +10,7 @@ def k():
     # print ('!!!! k - works !!!!!!')
     #Returns k-list
 
-    k_start=time.time()
+    # k_start=time.time()
     with open('EE.txt', 'r') as f:
         ae = []
         for el in f:
@@ -23,7 +23,7 @@ def k():
         le.append(float(el.split('\t')[0]))
 
     _k = np.array(le)
-    print (f'Time for k={time.time()-k_start}')
+    # print (f'Time for k={time.time()-k_start}')
     return _k
 
 
