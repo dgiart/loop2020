@@ -192,17 +192,17 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
 
 #Initial matrix
 
-    # for i in range(imax+1):
-    #     r = max(0,R-Re)+i*dr
-    #     # print jend[i]
-    #     for j in range(jmax+1):
-    #         z=j*dz
-    #         M[i][j]=0.
-    #         if j>=jend[i]:
-    #             if _type=='exp':
-    #                 M[i][j]= exp(e(r,z,R,k,ee,ek,P))
-    #             if _type=='one':
-    #                 M[i][j]= 1
+    for i in range(imax+1):
+        r = max(0,R-Re)+i*dr
+        # print jend[i]
+        for j in range(jmax+1):
+            z=j*dz
+            M[i][j]=0.
+            if j>=jend[i]:
+                if _type=='exp':
+                    M[i][j]= exp(e(r,z,R,k,ee,ek,P))
+                if _type=='one':
+                    M[i][j]= 1
 # Definition of the coefficients of interaction
     print ('Start fill the matrixes')
     startfill=time.time()
@@ -274,48 +274,47 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
     ie2 =  int(Lr2/dr)
     je2 =  int(Lz2/dz)
 
-    # dev=100
-    # e=1
-    # dev_old=0
-    # count=0
-    # dev=10
-    # fl=0
-    # print ('start EMPTY iterating, T=',time.time()-start)
-    # startempty=time.time()
-    # iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,0,jbeg,jend,0,0,_w)
-    # print (f'Time for empty={time.time()-startempty}')
-    # print ('start IZotropic iterating, T=',time.time()-start)
-    #
-    # startisotropic=time.time()
-    # while  (dev>0.0001 or e>0.000001) and count<10000:
-    #     dev_old=dev
-    #     startiter=time.time()
-    #     M=iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,imax,jbeg,jend,i1,i2,_w)
-    #     if count<5:
-    #         print (f'Time for iter: {time.time()-startiter}')
-    #     count+=1
-    #     if R<=L:
-    #         flow1=flow_small(R, M,Ffiz,Lr1,Lz1,dr,dz)
-    #         flow2=flow_small(R, M,Ffiz,Lr2,Lz2,dr,dz)
-    #     else:
-    #         flow1=flow_big(R,L, M,Ffiz,ie01, ie1, je1,dr,dz)
-    #         flow2=flow_big(R,L, M,Ffiz,ie02, ie2, je2,dr,dz)
-    #
-    #
-    #     if count>100:# and count%100==0:
-    #
-    #         fl=(flow1+flow2)/2
-    #
-    #         dev=abs(flow1-flow2)/fl
-    #         e=abs(dev-dev_old)
-    # # except:
-    # #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-    # print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
-    # print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-    # print (f'Time for isotropic={time.time()-startisotropic}')
+    dev=100
+    e=1
+    dev_old=0
+    count=0
+    dev=10
+    fl=0
+    print ('start EMPTY iterating, T=',time.time()-start)
+    startempty=time.time()
+    iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,0,jbeg,jend,0,0,_w)
+    print (f'Time for empty={time.time()-startempty}')
+    print ('start IZotropic iterating, T=',time.time()-start)
+
+    startisotropic=time.time()
+    while  (dev>0.0001 or e>0.000001) and count<10000:
+        dev_old=dev
+        startiter=time.time()
+        M=iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,imax,jbeg,jend,i1,i2,_w)
+        if count<5:
+            print (f'Time for iter: {time.time()-startiter}')
+        count+=1
+        if R<=L:
+            flow1=flow_small(R, M,Ffiz,Lr1,Lz1,dr,dz)
+            flow2=flow_small(R, M,Ffiz,Lr2,Lz2,dr,dz)
+        else:
+            flow1=flow_big(R,L, M,Ffiz,ie01, ie1, je1,dr,dz)
+            flow2=flow_big(R,L, M,Ffiz,ie02, ie2, je2,dr,dz)
+
+
+        if count>100:# and count%100==0:
+
+            fl=(flow1+flow2)/2
+
+            dev=abs(flow1-flow2)/fl
+            e=abs(dev-dev_old)
+    # except:
+    #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+    print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
+    print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+    print (f'Time for isotropic={time.time()-startisotropic}')
 
     print ('****************************************\n')
-    print ('start Anizotropic')
     for i in range(imax+1):
         r = max(0,R-Re)+i*dr
         for j in range(jmax+1):
@@ -325,7 +324,7 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
                     M[i][j]= exp(E(r,z,R,k,ee,ek,P))
                 if _type=='one':
                     M[i][j]= 1
-    # _w=1.95
+    _w=1.95
     e=1
     dev_old=0
     count=0
@@ -333,8 +332,7 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
     fl=0
     # try:
     startaniz=time.time()
-    # while  ( e>0.0000001) and count<10000:#DELETED dev>0.001 or
-    while  (dev>0.0001 or e>0.000001) and count<10000:
+    while  ( e>0.0000001) and count<10000:#DELETED dev>0.001 or
         dev_old=dev
         tt=time.time()
         M=iter(M,a1,a2,a3,a4,a5,imax,jbeg,jend,i1,i2,_w)
@@ -348,21 +346,21 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
             flow2=flow_big(R,L, M,Ff,ie02, ie2, je2,dr,dz)
 
 
-        if count>99:# and count%100==0:
+        if count>100:# and count%100==0:
 
             fl=(flow1+flow2)/2
 
             dev=abs(flow1-flow2)/fl
             e=abs(dev-dev_old)
-        if count%500==0:
+        if count%100==0:
             fl=(flow1+flow2)/2
             print ('ANIZ!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-            p=M[:,0]
-            z=np.array(range(len(p)))
-            plt.plot(z,p)
-            plt.show()
+            # p=M[:,0]
+            # z=np.array(range(len(p)))
+            # plt.plot(z,p)
+            # plt.show()
     # except:
-    #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+    print ('Finish !count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
     print (f'Time for anizotropic={time.time()-startaniz}')
 
 
