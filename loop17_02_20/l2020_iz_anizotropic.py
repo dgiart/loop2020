@@ -115,7 +115,7 @@ def calc_coeff(Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbe
     return {'Ff':Ff,'dFr':dFr,'dFz':dFz,'Ffiz':Ffiz,'dFriz':dFriz,'dFziz':dFziz}
 
 
-def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
+def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
 
     start = time.time()
     print ('start with jit and CALC!: ',time.asctime())
@@ -204,14 +204,14 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
                 if _type=='one':
                     M[i][j]= 1
 # Definition of the coefficients of interaction
-    print ('Start fill the matrixes')
+    # print ('Start fill the matrixes')
     startfill=time.time()
     coefs=calc_coeff(Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbeg,dr,dz)
     Ff=coefs['Ff'];dFr=coefs['dFr'];dFz=coefs['dFz']
     Ffiz=coefs['Ffiz'];dFriz=coefs['dFriz'];dFziz=coefs['dFziz']
 
 #Find coefficients for yDot
-    print(f'Time for coefficient calculation: {time.time()-startfill}')
+    # print(f'Time for coefficient calculation: {time.time()-startfill}')
     if R<=Re:
         a3[0]=-6.
         a3iz[0]=-6.
@@ -253,7 +253,7 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
                 a2iz[i][j] = 1. - (1/(R-Re+i*dr) - dFriz[i][j])*dr/2
                 a4iz[i][j] = 1. - dFziz[i][j]*dr/2
                 a5iz[i][j] = 1. + dFziz[i][j]*dr/2
-    print (f'Finish fill the matrixes, T={time.time()-startfill}')
+    # print (f'Finish fill the matrixes, T={time.time()-startfill}')
     # Define contours
     Lz1 = max(3.*rc,L/10.)
     Lr1 = sqrt(L*L-Lz1*Lz1)-Lz1+min(R,L)
@@ -280,19 +280,19 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
     count=0
     dev=10
     fl=0
-    print ('start EMPTY iterating, T=',time.time()-start)
+    # print ('start EMPTY iterating, T=',time.time()-start)
     startempty=time.time()
     iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,0,jbeg,jend,0,0,_w)
-    print (f'Time for empty={time.time()-startempty}')
-    print ('start IZotropic iterating, T=',time.time()-start)
+    # print (f'Time for empty={time.time()-startempty}')
+    # print ('start IZotropic iterating, T=',time.time()-start)
 
     startisotropic=time.time()
-    while  (dev>0.0001 or e>0.000001) and count<10000:
+    while  (dev>0.001 or e>0.000001) and count<10000:
         dev_old=dev
         startiter=time.time()
         M=iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,imax,jbeg,jend,i1,i2,_w)
-        if count<5:
-            print (f'Time for iter: {time.time()-startiter}')
+        # if count<5:
+        #     print (f'Time for iter: {time.time()-startiter}')
         count+=1
         if R<=L:
             flow1=flow_small(R, M,Ffiz,Lr1,Lz1,dr,dz)
@@ -310,9 +310,18 @@ def LiebmanAniz(_type,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.):
             e=abs(dev-dev_old)
     # except:
     #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-    print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
-    print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-    print (f'Time for isotropic={time.time()-startisotropic}')
+    # print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
+    # print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+    # print (f'Time for isotropic={time.time()-startisotropic}')
+    if form=='iz':
+
+        res={'sol':M,'flow':fl,'dev':dev,'N_points':N_points,'count':count, 'e':e,'i_max':imax,'j_max':jmax,'t':time.time()-start}
+        print ('iZotropic Finally DONE with ',time.time()-start)
+        # p=M[:,0]
+        # z=np.array(range(len(p)))
+        # plt.plot(z,p)
+        # plt.show()
+        return res
 
     print ('****************************************\n')
     for i in range(imax+1):
