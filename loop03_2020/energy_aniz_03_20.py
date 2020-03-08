@@ -26,10 +26,29 @@ def closest(array,value):
     else:
         return array[jl]
 
+def I01(r, z, R,K,ee,ek):
+    from math import sqrt
+    _k = float( sqrt( 4. * r * R / float((r + R) * (r + R) + z * z) ) )
+    k=closest(K,_k)
+    # print 'k=',_k
+    out = 1 / ( sqrt( z * z + (r + R) * (r + R) ))
+    # print 'out=',out
+    ins = (R * R - r * r - z * z) / float(z * z + (R - r) * (R - r))
+    # print 'ins=',ins
+    EE =ee[k]
+    EK =ek[k]
+    return float( out * (ins * EE + EK) )
 
-
-def e(r,z,R,k,ee,ek,P):
-    c11=1.554; c12=0.672; c13=0.646; c33=1.725; c44=0.363; c66=(c11-c22)/2
+def e_an(r,z,R,eps,k,ee,ek,P):
+    pi=3.1416
     c11=1.554; c12=0.672; c13=0.646; c33=1.725; c44=0.363; c66=(c11-c12)/2
     v1=(-(c13*c13+2*c13*c44-c11*c33)+sqrt((c13*c13+2*c13*c44-c11*c33)*(c13*c13+2*c13*c44-c11*c33)-4*(c11*c44*c44*c33)))/(2*c11*c44)
     v2=(-(c13*c13+2*c13*c44-c11*c33)-sqrt((c13*c13+2*c13*c44-c11*c33)*(c13*c13+2*c13*c44-c11*c33)-4*(c11*c44*c44*c33)))/(2*c11*c44)
+    v3=c44/c66
+    d=(eps*(c11+c12)-2*c13)/(c33-eps*c13)
+    B1=(c13+v2*c11)/(2*c11*(c13+c44)*(v1-v2)*sqrt(v1))
+    B2=(c13+v1*c11)/(2*c11*(c13+c44)*(v2-v1)*sqrt(v2))
+    B=P*(c11+c12+d*c13)/(pi*(2+d))
+    First=B*B1*(v1*(c13+c44)+eps*(c44-v1*c11))*I01(r, z/(sqrt(v1)), R,k,ee,ek)
+    Second=B*B2*(v2*(c13+c44)+eps*(c44-v2*c11))*I01(r, z/(sqrt(v2)), R,k,ee,ek)
+    return First+Second
