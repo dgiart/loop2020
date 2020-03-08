@@ -10,7 +10,7 @@ def k():
     #Returns k-list
 
     # k_start=time.time()
-    with open('/home/art/loop2020/loop03_2020/EE.txt', 'r') as f:
+    with open('../EE.txt', 'r') as f:#../ - becose of Jupiter
         ae = []
         for el in f:
             ae.append(el)
@@ -30,7 +30,7 @@ def k():
 def ee():
     # returns Dict:{k:EE}
     # print ('!!!! ee - works !!!!!!')
-    with open('/home/art/loop2020/loop03_2020/EE.txt', 'r') as f:
+    with open('../EE.txt', 'r') as f:#../ - becose of Jupiter
         ae = []
         for el in f:
             ae.append(el)
@@ -52,7 +52,7 @@ def ek():
     # Download of EK and forming nps
     # returns Dict:{k:EK}
     # print ('!!!! ek - works !!!!!!')
-    with open('/home/art/loop2020/loop03_2020/EK.txt', 'r') as f:
+    with open('../EK.txt', 'r') as f:
         ak = []
         for el in f:
             ak.append(el)
@@ -75,7 +75,7 @@ def dee():
     # Download of dEE and forming nps
     # returns Dict:{k:dEK}
     # print ('!!!! dee - works !!!!!!')
-    with open('/home/art/loop2020/loop03_2020/dEE.txt', 'r') as f:
+    with open('../dEE.txt', 'r') as f:#../ - becose of Jupiter
         ade = []
         for el in f:
             ade.append(el)
@@ -97,7 +97,7 @@ def dek():
     # Download of dEK and forming nps
     # returns Dict:{k:dEK}
     # print ('!!!! dee - works !!!!!!')
-    with open('/home/art/loop2020/loop03_2020/dEK.txt', 'r') as f:
+    with open('../dEK.txt', 'r') as f:#../ - becose of Jupiter
         adk = []
         for el in f:
             adk.append(el)
