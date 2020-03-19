@@ -39,7 +39,7 @@ def I01(r, z, R,K,ee,ek):
     EK =ek[k]
     return float( out * (ins * EE + EK) )
 
-def e_an(r,z,R,eps,k,ee,ek,P):
+def E_an(r,z,R,eps,k,ee,ek,P):
     pi=3.1416
     c11=1.554; c12=0.672; c13=0.646; c33=1.725; c44=0.363; c66=(c11-c12)/2
     v1=(-(c13*c13+2*c13*c44-c11*c33)+sqrt((c13*c13+2*c13*c44-c11*c33)*(c13*c13+2*c13*c44-c11*c33)-4*(c11*c44*c44*c33)))/(2*c11*c44)
@@ -52,6 +52,38 @@ def e_an(r,z,R,eps,k,ee,ek,P):
     First=B*B1*(v1*(c13+c44)+eps*(c44-v1*c11))
     Second=B*B2*(v2*(c13+c44)+eps*(c44-v2*c11))
     return First*I01(r, z/(sqrt(v1)), R,k,ee,ek)+Second*I01(r, z/(sqrt(v2)), R,k,ee,ek)
+def I_r(r,z,R,K,ee,ek,dee,dek):
+    m = float((R - r) * (R - r) + z * z)
+    p = float(((R + r) * (R + r) + z * z) ** 0.5)
+    t = float(R * R - r * r - z * z)
+    _k = (4 * R * r / p ** 2)**0.5
+    k2r=4*R*(1-2*r*(r+R)/(p*p))/(p*p)
+    k = closest(K, _k)
+    _ee = ee[k]
+    _ek = ek[k]
+    _dee = dee[k]
+    _dek=dek[k]
+    t1=-(R+r)*(t*_ee/m+_ek)/(p*p*p)
+    t2=-(2*r*m-2*(R-r)*t)*_ee/(p*m*m)
+    t3=k2r*(t*_dee/m+_dek)/p
+    I_r=t1+t2+t3
+    return I_r
+def E_an_r(r,z,R,eps,k,ee,ek,dee,dek,P):
+    pi=3.1416
+    c11=1.554; c12=0.672; c13=0.646; c33=1.725; c44=0.363; c66=(c11-c12)/2
+    v1=(-(c13*c13+2*c13*c44-c11*c33)+sqrt((c13*c13+2*c13*c44-c11*c33)*(c13*c13+2*c13*c44-c11*c33)-4*(c11*c44*c44*c33)))/(2*c11*c44)
+    v2=(-(c13*c13+2*c13*c44-c11*c33)-sqrt((c13*c13+2*c13*c44-c11*c33)*(c13*c13+2*c13*c44-c11*c33)-4*(c11*c44*c44*c33)))/(2*c11*c44)
+    v3=c44/c66
+    d=(eps*(c11+c12)-2*c13)/(c33-eps*c13)
+    B1=(c13+v2*c11)/(2*c11*(c13+c44)*(v1-v2)*sqrt(v1))
+    B2=(c13+v1*c11)/(2*c11*(c13+c44)*(v2-v1)*sqrt(v2))
+    B=P*(c11+c12+d*c13)/(pi*(2+d))
+    First=B*B1*(v1*(c13+c44)+eps*(c44-v1*c11))
+    Second=B*B2*(v2*(c13+c44)+eps*(c44-v2*c11))
+    E_r =First*I_r(r, z/(sqrt(v1)), R,k,ee,ek,dee,dek)+Second*I_r(r, z/(sqrt(v2)), R,k,ee,ek,dee,dek)
+    return E_r
+
+
 
 def I_z(r,z,R,K,ee,ek,dee,dek):
     m = float((R - r) * (R - r) + z * z)
@@ -79,5 +111,5 @@ def E_an_z(r,z,R,eps,k,ee,ek,dee,dek,P):
     B=P*(c11+c12+d*c13)/(pi*(2+d))
     First=B*B1*(v1*(c13+c44)+eps*(c44-v1*c11))
     Second=B*B2*(v2*(c13+c44)+eps*(c44-v2*c11))
-    E_z =First*I_z(r, z/(sqrt(v1)), R,k,ee,ek,dee,dek)+Second*I_z(r, z/(sqrt(v2)), R,k,ee,ek,dee,dek)
+    E_z =First*I_z(r, z/(sqrt(v1)), R,k,ee,ek,dee,dek)/sqrt(v1)+Second*I_z(r, z/(sqrt(v2)), R,k,ee,ek,dee,dek)/sqrt(v2)
     return E_z
