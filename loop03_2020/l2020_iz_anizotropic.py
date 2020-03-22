@@ -118,7 +118,7 @@ def calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax
 def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
 
     start = time.time()
-    print ('start with jit and CALC!: ',time.asctime())
+    # print ('start with jit and CALC!: ',time.asctime())
     from energy_aniz_03_20 import E_an as E, E_an_r as E_r, E_an_z as E_z
     from Energies import e, er , ez
     from Load_Energies import k, ee, ek, dee, dek
@@ -287,7 +287,7 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
     # print ('start IZotropic iterating, T=',time.time()-start)
 
     startisotropic=time.time()
-    while  (dev>0.001 or e>0.000001) and count<10000:
+    while  (dev>0.01 or e>0.0000001) and count<10000:
         dev_old=dev
         startiter=time.time()
         M=iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,imax,jbeg,jend,i1,i2,_w)
@@ -308,22 +308,26 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
 
             dev=abs(flow1-flow2)/fl
             e=abs(dev-dev_old)
+        if count%100==0:
+            fl=(flow1+flow2)/2
+            print ('ANIZ!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+
     # except:
     #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
-    print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
+    # print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
     # print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
     # print (f'Time for isotropic={time.time()-startisotropic}')
     if form=='iz':
 
         res={'sol':M,'flow':fl,'dev':dev,'N_points':N_points,'count':count, 'e':e,'i_max':imax,'j_max':jmax,'t':time.time()-start}
-        print ('iZotropic Finally DONE with ',time.time()-start)
+        # print ('iZotropic Finally DONE with ',time.time()-start)
         # p=M[:,0]
         # z=np.array(range(len(p)))
         # plt.plot(z,p)
         # plt.show()
         return res
 
-    print ('****************************************\n')
+    # print ('****************************************\n')
     for i in range(imax+1):
         r = max(0,R-Re)+i*dr
         for j in range(jmax+1):
@@ -341,7 +345,7 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
     fl=0
     # try:
     startaniz=time.time()
-    while  ( e>0.0000001) and count<10000:#DELETED dev>0.001 or
+    while  (dev>0.01 or e>0.0000001)and count<10000:#( e>0.0000001) and count<10000:#DELETED dev>0.001 or
         dev_old=dev
         tt=time.time()
         M=iter(M,a1,a2,a3,a4,a5,imax,jbeg,jend,i1,i2,_w)
