@@ -310,7 +310,7 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
             e=abs(dev-dev_old)
         if count%100==0:
             fl=(flow1+flow2)/2
-            print ('ANIZ!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
+            print ('IZ!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
 
     # except:
     #     print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
@@ -320,11 +320,11 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
     if form=='iz':
 
         res={'sol':M,'flow':fl,'dev':dev,'N_points':N_points,'count':count, 'e':e,'i_max':imax,'j_max':jmax,'t':time.time()-start}
-        # print ('iZotropic Finally DONE with ',time.time()-start)
-        # p=M[:,0]
-        # z=np.array(range(len(p)))
-        # plt.plot(z,p)
-        # plt.show()
+        print ('iZotropic Finally DONE with ',time.time()-start)
+        p=M[:,0]
+        z=np.array(range(len(p)))
+        plt.plot(z,p)
+        plt.show()
         return res
 
     # print ('****************************************\n')
