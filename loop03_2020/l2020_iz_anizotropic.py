@@ -85,13 +85,17 @@ def flow_big(R,L,Y,Ff,ie0, ie, je,dr,dz):
     Ie = Ie + Pi*dr/dz*sum
     Ie = Ie/(Pi*R)
     return(Ie)
-def calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbeg,dr,dz):
+def calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbeg,dr,dz,form):
     Ff = np.zeros( [imax+1,jmax+1] )
     dFr = np.zeros( [imax+1,jmax+1] )
     dFz = np.zeros( [imax+1,jmax+1] )
     Ffiz = np.zeros( [imax+1,jmax+1] )
     dFriz = np.zeros( [imax+1,jmax+1] )
     dFziz = np.zeros( [imax+1,jmax+1] )
+    if form=='aniz':
+        Piz=0
+    else:
+        Piz=P
     for i in range(imax+1):
         r=max(0,R-Re)+i*dr
         for j in range(jmax+1):
@@ -101,24 +105,24 @@ def calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax
                 dFr[i][j]=0
                 dFz[i][j]=0
 
-                # Ffiz[i][j]=0
-                # dFriz[i][j]=0
-                # dFziz[i][j]=0
+                Ffiz[i][j]=0
+                dFriz[i][j]=0
+                dFziz[i][j]=0
             else:
                 Ff[i][j]=E(r,z,R,eps,k,ee,ek,P)
                 dFr[i][j]=E_r( r, z, R,eps, k,ee,ek,dee,dek,P)
                 dFz[i][j]=E_z( r, z, R, eps,k,ee,ek,dee,dek,P)
 
-                # Ffiz[i][j]=e(r,z,R,eps,k,ee,ek,P)
-                # dFriz[i][j]=er( r, z, R, eps,k,ee,ek,dee,dek,P)
-                # dFziz[i][j]=ez( r, z, R, eps,k,ee,ek,dee,dek,P)
+                Ffiz[i][j]=e(r,z,R,k,ee,ek,Piz)
+                dFriz[i][j]=er( r, z, R, k,ee,ek,dee,dek,Piz)
+                dFziz[i][j]=ez( r, z, R, k,ee,ek,dee,dek,Piz)
     return {'Ff':Ff,'dFr':dFr,'dFz':dFz,'Ffiz':Ffiz,'dFriz':dFriz,'dFziz':dFziz}
 
 
 def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
 
     start = time.time()
-    # print ('start with jit and CALC!: ',time.asctime())
+    print (f'start with jit and CALC! form={form}, type={_type}: ',time.asctime())
     from energy_aniz_03_20 import E_an as E, E_an_r as E_r, E_an_z as E_z
     from Energies import e, er , ez
     from Load_Energies import k, ee, ek, dee, dek
@@ -206,7 +210,7 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
 # Definition of the coefficients of interaction
     # print ('Start fill the matrixes')
     startfill=time.time()
-    coefs=calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbeg,dr,dz)
+    coefs=calc_coeff(eps,Re,E,E_r,E_z,e, er , ez ,R, k,ee,ek,dee,dek,P,i1,i2,imax,jmax,jbeg,dr,dz,form)
     Ff=coefs['Ff'];dFr=coefs['dFr'];dFz=coefs['dFz']
     Ffiz=coefs['Ffiz'];dFriz=coefs['dFriz'];dFziz=coefs['dFziz']
 
@@ -317,6 +321,11 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
     # print ('FINISH IZotropic iterating with jit, T={}, flow={}'.format(time.time()-start, fl))
     # print ('!count={}, flow={},e={}, dev={},w={},T={}'.format(count,fl,e,dev, _w,time.time()-start))
     # print (f'Time for isotropic={time.time()-startisotropic}')
+    print ('iZotropic Finally DONE with ',time.time()-start)
+    p=M[:,0]
+    z=np.array(range(len(p)))
+    plt.plot(z,p)
+    plt.show()
     if form=='iz':
 
         res={'sol':M,'flow':fl,'dev':dev,'N_points':N_points,'count':count, 'e':e,'i_max':imax,'j_max':jmax,'t':time.time()-start}
