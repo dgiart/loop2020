@@ -291,7 +291,7 @@ def LiebmanAniz(_type,eps,Ri,Re,R, P=1., _w=1.95, dr=1.,dz=1.,form='aniz'):
     # print ('start IZotropic iterating, T=',time.time()-start)
 
     startisotropic=time.time()
-    while  (dev>0.01 or e>0.0000001) and count<10000:
+    while  (dev>0.01 or e>0.0000001) and count<50000:
         dev_old=dev
         startiter=time.time()
         M=iter(M,a1iz,a2iz,a3iz,a4iz,a5iz,imax,jbeg,jend,i1,i2,_w)
